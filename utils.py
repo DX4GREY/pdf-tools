@@ -85,13 +85,15 @@ def slide_to_image(slide, width, height):
 	from PIL import Image, ImageDraw
 
 	try:
-		img = Image.new("RGB", (int(width), int(height)), "white")
+		# Reduce resolution to optimize memory usage
+		width, height = int(width // 2), int(height // 2)
+		img = Image.new("RGB", (width, height), "white")
 		draw = ImageDraw.Draw(img)
 
 		for shape in slide.shapes:
 			if shape.has_text_frame:
+				y_offset = 10  # Start drawing text from the top
 				for paragraph in shape.text_frame.paragraphs:
-					y_offset = 10  # Start drawing text from the top
 					for run in paragraph.runs:
 						text = run.text.strip()
 						if text:  # Only draw non-empty text
@@ -100,6 +102,10 @@ def slide_to_image(slide, width, height):
 
 		logging.info("Slide successfully converted to image")
 		return img
+	except MemoryError as e:
+		logging.error("MemoryError: Not enough memory to process the slide. Consider reducing the resolution or size.")
+		logging.debug("Stack trace:", exc_info=True)
+		return None
 	except AttributeError as e:
 		logging.error(f"AttributeError while processing slide: {e}")
 		logging.debug("Ensure the slide object has the expected attributes.", exc_info=True)
