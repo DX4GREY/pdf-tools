@@ -83,7 +83,6 @@ def slide_to_image(slide, width, height):
 	Helper function to render a slide as an image.
 	"""
 	from PIL import Image, ImageDraw
-	import traceback
 
 	try:
 		img = Image.new("RGB", (int(width), int(height)), "white")
@@ -92,12 +91,19 @@ def slide_to_image(slide, width, height):
 		for shape in slide.shapes:
 			if shape.has_text_frame:
 				for paragraph in shape.text_frame.paragraphs:
+					y_offset = 10  # Start drawing text from the top
 					for run in paragraph.runs:
-						draw.text((10, 10), run.text, fill="black")  # Simplified text rendering
+						text = run.text.strip()
+						if text:  # Only draw non-empty text
+							draw.text((10, y_offset), text, fill="black")
+							y_offset += 15  # Increment y-offset for the next line of text
 
 		logging.info("Slide successfully converted to image")
 		return img
+	except AttributeError as e:
+		logging.error(f"AttributeError while processing slide: {e}")
+		logging.debug("Ensure the slide object has the expected attributes.", exc_info=True)
 	except Exception as e:
-		logging.error(f"Error converting slide to image: {e}")
+		logging.error(f"Unexpected error converting slide to image: {e}")
 		logging.debug("Stack trace:", exc_info=True)
 		return None
