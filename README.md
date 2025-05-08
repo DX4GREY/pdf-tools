@@ -1,39 +1,39 @@
 # PDF Tools
 
-PDF Tools adalah aplikasi berbasis web sederhana yang menyediakan berbagai alat untuk memanipulasi file PDF, seperti menggabungkan, memisahkan, mengompresi, dan mengonversi file dari format lain ke PDF.
+PDF Tools is a simple web-based application that provides various tools to manipulate PDF files, such as merging, splitting, compressing, and converting files from other formats to PDF.
 
-## Fitur
+## Features
 
-1. **PDF Merger**: Menggabungkan beberapa file PDF menjadi satu file PDF.
-2. **PDF Splitter**: Memisahkan file PDF menjadi halaman-halaman individual.
-3. **PDF Compressor**: Mengurangi ukuran file PDF dengan mengatur tingkat kompresi.
-4. **Image to PDF**: Mengonversi beberapa gambar (JPG, PNG, dll.) menjadi satu file PDF.
-5. **HTML to PDF**: Mengonversi file HTML menjadi file PDF.
-6. **Word to PDF**: Mengonversi file Word (DOCX) menjadi file PDF.
+1. **PDF Merger**: Combine multiple PDF files into a single PDF file.
+2. **PDF Splitter**: Split a PDF file into individual pages.
+3. **PDF Compressor**: Reduce the size of a PDF file by adjusting the compression level.
+4. **Image to PDF**: Convert multiple images (JPG, PNG, etc.) into a single PDF file.
+5. **HTML to PDF**: Convert HTML files into PDF files.
+6. **Word to PDF**: Convert Word files (DOCX) into PDF files.
 
-## Instalasi
+## Installation
 
-### Prasyarat
+### Prerequisites
 
-- Python 3.7 atau lebih baru
+- Python 3.7 or later
 - Pip (Python package manager)
-- Ghostscript (untuk kompresi PDF)
-- Redis (opsional, untuk rate limiting)
+- Ghostscript (for PDF compression)
+- Redis (optional, for rate limiting)
 
-### Langkah Instalasi
+### Installation Steps
 
-1. Clone repositori ini:
+1. Clone this repository:
    ```bash
    git clone <repository-url>
    cd pdf-tools
    ```
 
-2. Instal dependensi Python:
+2. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Instal Ghostscript:
+3. Install Ghostscript:
    - **Linux**: 
      ```bash
      sudo apt update && sudo apt install -y ghostscript
@@ -42,68 +42,68 @@ PDF Tools adalah aplikasi berbasis web sederhana yang menyediakan berbagai alat 
      ```bash
      brew install ghostscript
      ```
-   - **Windows**: Unduh dan instal Ghostscript dari [situs resmi](https://www.ghostscript.com/download/gsdnld.html).
+   - **Windows**: Download and install Ghostscript from [the official site](https://www.ghostscript.com/download/gsdnld.html).
 
-4. Jalankan aplikasi:
+4. Run the application:
    ```bash
    python app.py
    ```
 
-5. Akses aplikasi di browser Anda di `http://localhost:8080`.
+5. Access the application in your browser at `http://localhost:8080`.
 
-## Struktur Proyek
+## Project Structure
 
 ```
 pdf-tools/
-├── app.py               # File utama aplikasi Flask
-├── utils.py             # Fungsi utilitas untuk manipulasi file
-├── w2pdf.py             # Konversi Word ke PDF
-├── templates/           # Template HTML untuk antarmuka pengguna
-│   ├── index.html       # Halaman utama
-│   └── 521.html         # Halaman error 521
-├── static/              # File statis (CSS, JS, dll.)
-│   ├── main.js          # Logika frontend
-│   ├── style.css        # Gaya utama
-│   └── style.css.bak    # Versi cadangan gaya
-├── requirements.txt     # Daftar dependensi Python
-├── install-dep.sh       # Skrip instalasi untuk Linux/MacOS
-├── install-dep.bat      # Skrip instalasi untuk Windows
-└── README.md            # Dokumentasi proyek
+├── app.py               # Main Flask application file
+├── utils.py             # Utility functions for file manipulation
+├── w2pdf.py             # Word to PDF conversion
+├── templates/           # HTML templates for the user interface
+│   ├── index.html       # Main page
+│   └── 521.html         # Error 521 page
+├── static/              # Static files (CSS, JS, etc.)
+│   ├── main.js          # Frontend logic
+│   ├── style.css        # Main styles
+│   └── style.css.bak    # Backup styles
+├── requirements.txt     # Python dependencies list
+├── install-dep.sh       # Installation script for Linux/MacOS
+├── install-dep.bat      # Installation script for Windows
+└── README.md            # Project documentation
 ```
 
-## Cara Penggunaan
+## Usage Instructions
 
 1. **PDF Merger**:
-   - Unggah beberapa file PDF.
-   - Atur urutan file dengan drag-and-drop.
-   - Klik tombol "Merge" untuk menggabungkan file.
+   - Upload multiple PDF files.
+   - Arrange the file order using drag-and-drop.
+   - Click the "Merge" button to combine the files.
 
 2. **PDF Splitter**:
-   - Unggah file PDF.
-   - Klik tombol "Split" untuk memisahkan file menjadi halaman individual.
+   - Upload a PDF file.
+   - Click the "Split" button to separate the file into individual pages.
 
 3. **PDF Compressor**:
-   - Unggah file PDF.
-   - Pilih tingkat kompresi menggunakan slider.
-   - Klik tombol "Compress" untuk mengurangi ukuran file.
+   - Upload a PDF file.
+   - Select the compression level using the slider.
+   - Click the "Compress" button to reduce the file size.
 
 4. **Image to PDF**:
-   - Unggah beberapa gambar.
-   - Atur urutan gambar dengan drag-and-drop.
-   - Klik tombol "Convert to PDF" untuk membuat file PDF.
+   - Upload multiple images.
+   - Arrange the image order using drag-and-drop.
+   - Click the "Convert to PDF" button to create a PDF file.
 
 5. **HTML to PDF**:
-   - Unggah file HTML.
-   - Klik tombol "Convert" untuk mengonversi file menjadi PDF.
+   - Upload an HTML file.
+   - Click the "Convert" button to convert the file into a PDF.
 
 6. **Word to PDF**:
-   - Unggah file Word (DOCX).
-   - Klik tombol "Convert to PDF" untuk mengonversi file menjadi PDF.
+   - Upload a Word file (DOCX).
+   - Click the "Convert to PDF" button to convert the file into a PDF.
 
-## Lisensi
+## License
 
-Proyek ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-## Kontributor
+## Contributors
 
-- **Dx4** - Pengembang utama
+- **Dx4** - Lead Developer
