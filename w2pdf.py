@@ -52,10 +52,13 @@ def docx_to_pdf_better(docx_path, output_path):
             elif p.style.name.startswith("Heading 2"):
                 style = styles['MyHeading2']
             else:
+                # Adjust font size and alignment based on Word styles
+                font_size = p.style.font.size.pt if p.style.font.size else 11
                 style = ParagraphStyle(
                     name=f"Para-{p.alignment}",
                     parent=styles['JustifyCustom'],
-                    alignment=get_alignment(p.alignment)
+                    alignment=get_alignment(p.alignment),
+                    fontSize=font_size
                 )
 
             if text.strip():
@@ -76,11 +79,13 @@ def docx_to_pdf_better(docx_path, output_path):
                 ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
                 ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+                ('FONTSIZE', (0,0), (-1,-1), 10),
             ]))
             story.append(t)
             story.append(Spacer(1, 0.2 * inch))
 
-    # Gambar dari rel
+    # Handle images with proper scaling
     for rel in doc.part._rels:
         rel = doc.part._rels[rel]
         if "image" in rel.target_ref:
@@ -88,8 +93,8 @@ def docx_to_pdf_better(docx_path, output_path):
             img_io = BytesIO(img_data)
             img = PILImage.open(img_io)
             max_width = 5 * inch
-            ratio = max_width / img.width
-            img_width = max_width
+            ratio = min(max_width / img.width, 1)  # Scale down if necessary
+            img_width = img.width * ratio
             img_height = img.height * ratio
             story.append(Image(img_io, width=img_width, height=img_height))
             story.append(Spacer(1, 0.2 * inch))
