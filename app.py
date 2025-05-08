@@ -13,6 +13,7 @@ from docx import Document
 from fpdf import FPDF
 from w2pdf import docx_to_pdf_better
 from pptx import Presentation
+from utils import slide_to_image
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -228,16 +229,24 @@ def ppt_to_pdf():
 
 		prs = Presentation(pptx_path)
 		pdf = FPDF()
-		pdf.set_auto_page_break(auto=True, margin=15)
+		pdf.set_auto_page_break(auto=True, margin=0)
 
-		for slide in prs.slides:
+		for i, slide in enumerate(prs.slides):
+			# Render slide as an image
+			img_path = os.path.join(OUTPUT_FOLDER, f"slide_{i+1}.png")
+			slide_width = prs.slide_width
+			slide_height = prs.slide_height
+
+			# Save slide as an image using Pillow
+			slide_image = slide_to_image(slide, slide_width, slide_height)
+			slide_image.save(img_path, "PNG")
+
+			# Add image to PDF
 			pdf.add_page()
-			for shape in slide.shapes:
-				if shape.has_text_frame:
-					for paragraph in shape.text_frame.paragraphs:
-						for run in paragraph.runs:
-							pdf.set_font("Arial", size=12)
-							pdf.multi_cell(0, 10, run.text)
+			pdf.image(img_path, x=0, y=0, w=210, h=297)  # A4 size (210x297 mm)
+
+			# Remove temporary image file
+			os.remove(img_path)
 
 		pdf.output(output_pdf_path)
 

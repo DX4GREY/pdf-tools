@@ -66,3 +66,20 @@ def cleanup_output_folder():
 				except Exception as e:
 					print(f"[Auto Cleanup] Error bro {path}: {e}")
 		time.sleep(600)
+
+def slide_to_image(slide, width, height):
+	"""
+	Helper function to render a slide as an image.
+	"""
+	from PIL import Image, ImageDraw
+
+	img = Image.new("RGB", (int(width), int(height)), "white")
+	draw = ImageDraw.Draw(img)
+
+	for shape in slide.shapes:
+		if shape.has_text_frame:
+			for paragraph in shape.text_frame.paragraphs:
+				for run in paragraph.runs:
+					draw.text((10, 10), run.text, fill="black")  # Simplified text rendering
+
+	return img
