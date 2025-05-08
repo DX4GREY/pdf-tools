@@ -12,6 +12,7 @@ from flask_redis import FlaskRedis
 from docx import Document
 from fpdf import FPDF
 from w2pdf import docx_to_pdf_better
+from pptx import Presentation
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -210,6 +211,43 @@ def word_to_pdf():
 	finally:
 		try: os.remove(docx_path)
 		except: pass
+
+@app.route('/ppt_to_pdf', methods=['POST'])
+@limiter.limit("5 per minute")
+def ppt_to_pdf():
+	uploaded_file = request.files.get('file')
+	if not uploaded_file or not uploaded_file.filename.endswith('.pptx'):
+		return "File tidak valid. Harus .pptx", 400
+
+	try:
+		pptx_path = os.path.join(UPLOAD_FOLDER, secure_filename(uploaded_file.filename))
+		uploaded_file.save(pptx_path)
+
+		output_pdf_name = f"ppt2pdf_{uuid.uuid4().hex}.pdf"
+		output_pdf_path = os.path.join(OUTPUT_FOLDER, output_pdf_name)
+
+		prs = Presentation(pptx_path)
+		pdf = FPDF()
+		pdf.set_auto_page_break(auto=True, margin=15)
+
+		for slide in prs.slides:
+			pdf.add_page()
+			for shape in slide.shapes:
+				if shape.has_text_frame:
+					for paragraph in shape.text_frame.paragraphs:
+						for run in paragraph.runs:
+							pdf.set_font("Arial", size=12)
+							pdf.multi_cell(0, 10, run.text)
+
+		pdf.output(output_pdf_path)
+
+		return send_file(output_pdf_path, as_attachment=True, download_name=output_pdf_name)
+	except Exception as e:
+		return f"Gagal konversi: {e}", 500
+	finally:
+		try: os.remove(pptx_path)
+		except: pass
+
 if __name__ == '__main__':
 	threading.Thread(target=cleanup_output_folder, daemon=True).start()
 	app.run(debug=True, host="0.0.0.0", port=8080)
