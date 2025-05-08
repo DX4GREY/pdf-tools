@@ -14,6 +14,7 @@ from fpdf import FPDF
 from w2pdf import docx_to_pdf_better
 from pptx import Presentation
 from utils import slide_to_image
+import logging  # Tambahkan impor logging
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -26,22 +27,33 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 redis = FlaskRedis(app)
 limiter = Limiter(get_remote_address, app=app, default_limits=["50 per minute"])
 
+# Konfigurasi logging
+if app.debug:  # Aktifkan logging hanya jika Flask dalam mode debug
+	logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 @app.errorhandler(RateLimitExceeded)
 def ratelimit_handler(e):
+	if app.debug:
+		logging.warning("Rate limit exceeded")
 	return render_template('521.html'), 521
 
 @app.route('/')
 def index():
+	if app.debug:
+		logging.info("Accessed index page")
 	return render_template('index.html')
 
 @app.route('/merge', methods=['POST'])
 @limiter.limit("10 per minute")
 def merge():
+	if app.debug:
+		logging.info("Merge endpoint called")
 	files = request.files.getlist('merge_files')
 	order = request.form.get('order', '')
 
 	filenames = []
 	for file in files:
+		logging.info(f"Processing file: {file.filename}")
 		filename = f"{uuid.uuid4().hex}.pdf"
 		path = os.path.join(UPLOAD_FOLDER, filename)
 		file.save(path)
@@ -61,11 +73,15 @@ def merge():
 	for f in filenames:
 		os.remove(f)
 
+	if app.debug:
+		logging.info(f"Merged PDF saved to: {output_path}")
 	return send_file(output_path, as_attachment=True)
 
 @app.route('/split', methods=['POST'])
 @limiter.limit("10 per minute")
 def split():
+	if app.debug:
+		logging.info("Split endpoint called")
 	file = request.files.get('split_file')
 	if not file:
 		return 'No file uploaded', 400
@@ -84,11 +100,15 @@ def split():
 	shutil.make_archive(split_dir, 'zip', split_dir)
 	shutil.rmtree(split_dir)
 
+	if app.debug:
+		logging.info(f"Split PDF saved to: {zip_path}")
 	return send_file(zip_path, as_attachment=True)
 
 @app.route('/compress', methods=['POST'])
 @limiter.limit("8 per minute")
 def compress_pdf_route():
+	if app.debug:
+		logging.info("Compress endpoint called")
 	uploaded_file = request.files.get('file')
 	if not uploaded_file or uploaded_file.filename == '':
 		return "No file uploaded", 400
@@ -106,6 +126,8 @@ def compress_pdf_route():
 
 	try:
 		Compress(input_path, output_path, power=power)
+		if app.debug:
+			logging.info(f"Compressed PDF saved to: {output_path}")
 		return send_file(output_path, as_attachment=True, download_name=f"compressed_{filename}")
 	except Exception as e:
 		return f"Compression failed: {e}", 500
@@ -118,6 +140,8 @@ def compress_pdf_route():
 @app.route('/image_to_pdf', methods=['POST'])
 @limiter.limit("8 per minute")
 def image_to_pdf():
+	if app.debug:
+		logging.info("Image to PDF endpoint called")
 	files = request.files.getlist('image_files')
 	order = request.form.get('order')
 
@@ -146,11 +170,15 @@ def image_to_pdf():
 	output_pdf_path = os.path.join(OUTPUT_FOLDER, fname)
 	images[0].save(output_pdf_path, save_all=True, append_images=images[1:], resolution=100.0, quality=95)
 
+	if app.debug:
+		logging.info(f"Image-based PDF saved to: {output_pdf_path}")
 	return send_file(output_pdf_path, as_attachment=True, download_name=fname)
 
 @app.route('/html_to_pdf', methods=['POST'])
 @limiter.limit("5 per minute")
 def html_to_pdf():
+	if app.debug:
+		logging.info("HTML to PDF endpoint called")
 	uploaded_file = request.files.get('html_file')
 	if not uploaded_file or not uploaded_file.filename.endswith(('.html', '.htm')):
 		return "File tidak valid. Harus .html atau .htm", 400
@@ -165,6 +193,8 @@ def html_to_pdf():
 
 		HTML(html_path).write_pdf(output_pdf)
 
+		if app.debug:
+			logging.info(f"HTML-based PDF saved to: {output_pdf}")
 		return send_file(output_pdf, as_attachment=True, download_name=fname)
 	except Exception as e:
 		return f"Gagal konversi: {e}", 500
@@ -193,6 +223,8 @@ class StyledPDF(FPDF):
 @app.route('/word_to_pdf', methods=['POST'])
 @limiter.limit("5 per minute")
 def word_to_pdf():
+	if app.debug:
+		logging.info("Word to PDF endpoint called")
 	uploaded_file = request.files.get('file')
 	if not uploaded_file or not uploaded_file.filename.endswith('.docx'):
 		return "File tidak valid. Harus .docx", 400
@@ -206,6 +238,8 @@ def word_to_pdf():
 
 		docx_to_pdf_better(docx_path, output_pdf_path)
 
+		if app.debug:
+			logging.info(f"Word-based PDF saved to: {output_pdf_path}")
 		return send_file(output_pdf_path, as_attachment=True, download_name=output_pdf_name)
 	except Exception as e:
 		return f"Gagal konversi: {e}", 500
@@ -216,6 +250,8 @@ def word_to_pdf():
 @app.route('/ppt_to_pdf', methods=['POST'])
 @limiter.limit("5 per minute")
 def ppt_to_pdf():
+	if app.debug:
+		logging.info("PPT to PDF endpoint called")
 	uploaded_file = request.files.get('file')
 	if not uploaded_file or not uploaded_file.filename.endswith('.pptx'):
 		return "File tidak valid. Harus .pptx", 400
@@ -250,6 +286,8 @@ def ppt_to_pdf():
 
 		pdf.output(output_pdf_path)
 
+		if app.debug:
+			logging.info(f"PPT-based PDF saved to: {output_pdf_path}")
 		return send_file(output_pdf_path, as_attachment=True, download_name=output_pdf_name)
 	except Exception as e:
 		return f"Gagal konversi: {e}", 500
@@ -258,5 +296,7 @@ def ppt_to_pdf():
 		except: pass
 
 if __name__ == '__main__':
+	if app.debug:
+		logging.info("Starting the application in debug mode")
 	threading.Thread(target=cleanup_output_folder, daemon=True).start()
 	app.run(debug=True, host="0.0.0.0", port=8080)
