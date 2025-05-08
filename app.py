@@ -290,6 +290,16 @@ def ppt_to_pdf():
 			logging.info(f"PPT-based PDF saved to: {output_pdf_path}")
 		return send_file(output_pdf_path, as_attachment=True, download_name=output_pdf_name)
 	except Exception as e:
+		logging.error(f"Error converting PPT to PDF: {e}")
+		# Handle specific exceptions for better error messages
+		if isinstance(e, OSError):
+			return "Gagal menyimpan gambar slide. Pastikan Anda memiliki izin yang tepat.", 500
+		elif isinstance(e, ValueError):
+			return "Gagal mengonversi slide. Format file mungkin tidak didukung.", 500
+		else:
+			# General error handling
+			logging.error(f"Unexpected error: {e}")
+			# Return a generic error message
 		return f"Gagal konversi: {e}", 500
 	finally:
 		try: os.remove(pptx_path)
