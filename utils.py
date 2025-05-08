@@ -104,6 +104,6 @@ def slide_to_image(slide, width, height):
 		logging.error(f"AttributeError while processing slide: {e}")
 		logging.debug("Ensure the slide object has the expected attributes.", exc_info=True)
 	except Exception as e:
-		logging.error(f"Unexpected error converting slide to image: {e}")
+		logging.error(f"Unexpected error converting slide to image: {e.__class__.__name__}: {e}")
 		logging.debug("Stack trace:", exc_info=True)
 		return None
