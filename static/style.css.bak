@@ -1,0 +1,214 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background: #f4f4f4;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+}
+
+/*.tab-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}*/
+
+.tab {
+    display: none;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.tab.active {
+    display: block;
+}
+
+.tab-buttons {
+	display: flex;
+    justify-content: flex-start; /* ini dia yang ganti */
+    gap: 10px;
+    margin-bottom: 5px;
+    overflow-x: auto;
+    padding: 4px; /* tambahin padding biar nggak nempel */
+    white-space: nowrap;
+}
+
+.tab-buttons button {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+    display: inline-block;
+}
+
+.tab-buttons button:hover {
+    background-color: #d5d5d5;
+}
+
+.tab-buttons button.active {
+    background-color: #3f51b5;
+    color: #fff;
+}
+
+button {
+	padding: 10px 20px;
+	margin: 5px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#file_dropzone {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+#split_dropzone {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+#file_list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+#image2pdf_list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+#file_list li {
+    background: #e3e3e3;
+    padding: 8px;
+    margin: 4px 0;
+    border-radius: 5px;
+    cursor: grab;
+}
+
+#image2pdf_list li {
+	background: #e3e3e3;
+    padding: 8px;
+    margin: 4px 0;
+    border-radius: 5px;
+    cursor: grab;
+}
+
+body button {
+	padding: 8px;
+    margin: 4px 0;
+    width: 100%
+}
+
+.watermark {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-size: 13px;
+    color: #aaa;
+    opacity: 0.7;
+    z-index: 1000;
+}
+
+.loading-bar {
+    display: none;
+    width: 100%;
+    height: 4px;
+    margin-top: 10px;
+    background: #eee;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.loading-bar::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: #3f51b5;
+    animation: loadingAnim 1s infinite linear;
+}
+
+@keyframes loadingAnim {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+}
+
+@media (min-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}
+/* Style untuk label dan nilai seekbar */
+label[for="quality"] {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* Style utama slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+    outline: none;
+    transition: background 0.3s;
+}
+
+/* Warna track saat aktif */
+input[type="range"]:hover {
+    background: #ccc;
+}
+
+/* Thumb (titik geser) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    transition: background 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0056b3;
+}
+
+/* Untuk Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+/* Track di Firefox */
+input[type="range"]::-moz-range-track {
+    background: #ddd;
+    height: 8px;
+    border-radius: 4px;
+}

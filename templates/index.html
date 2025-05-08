@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PDF Tools | Splitter and Merger pdf file</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">	
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+	<div class="card">
+		<h1>PDF Tools</h1>
+		<p style="text-align: center; width: 100%;">Simple pdf toolkit using python.</p>
+		<div class="tab-container">
+			<div class="tab-buttons">
+				<button class="active" onclick="showTab('merge_tab')">MERGER</button>
+				<button onclick="showTab('split_tab')">SPLITTER</button>
+				<button onclick="showTab('compress_tab')">COMPRESSOR</button>
+				<button onclick="showTab('image2pdf_tab')">IMAGE to PDF</button>
+				<button onclick="showTab('html2pdf_tab')">HTML to PDF</button>
+				<button onclick="showTab('word2pdf_tab')">Word to PDF</button>
+			</div>
+		</div>
+		<div id="merge_tab" class="tab active">
+			<h2>PDF Merger</h2>
+			<form id="merge_form" method="post" enctype="multipart/form-data" action="/merge">
+				<input type="file" id="merge_input" name="merge_files" multiple accept="application/pdf" hidden>
+				<div id="merge_dropzone" onclick="document.getElementById('merge_input').click()">Drop or Click to Upload PDFs</div>
+				<ul id="file_list"></ul>
+				<input type="hidden" name="order" id="file_order">
+				<button class="ripple" type="submit">Merge</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>PDF Merger</strong> allows you to combine multiple PDF files into one, following the order you set.
+			
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop multiple PDF files into the upload area.</li>
+					<li>Reorder the files by dragging them as you wish.</li>
+					<li>Click the <strong>Merge</strong> button and wait for the process to complete.</li>
+					<li>The merged PDF file will be downloaded automatically.</li>
+				</ol>
+			</p>
+		</div>
+	
+		<div id="split_tab" class="tab">
+			<h2>PDF Splitter</h2>
+			<form id="split_form" method="post" enctype="multipart/form-data" action="/split">
+				<input type="file" id="split_input" name="split_file" accept="application/pdf" hidden>
+				<div id="split_dropzone" onclick="document.getElementById('split_input').click()">
+					<span id="split_dropzone_text">Drop or Click to Upload PDF</span>
+				</div>
+				<button class="ripple" type="submit">Split</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>PDF Splitter</strong> is used to separate a PDF into individual pages and compress them into a single ZIP file for easy download.
+			
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop a PDF file into the upload area.</li>
+					<li>Once the file is selected, click the <strong>Split</strong> button.</li>
+					<li>Wait for the process to complete and the resulting ZIP file will be downloaded automatically.</li>
+				</ol>
+			</p>
+		</div>
+		<div id="compress_tab" class="tab">
+			<h2>PDF Compressor</h2>
+			<form id="compress_form" method="post" enctype="multipart/form-data" action="/compress">
+				<input type="file" id="compress_input" name="file" accept="application/pdf" hidden>
+				<div id="compress_dropzone" onclick="document.getElementById('compress_input').click()">
+					<span id="compress_dropzone_text">Drop or Click to Upload PDF</span>
+				</div>
+				<br>
+				<label for="quality">Compression Level: <span id="quality_value">3</span></label><br>
+				<input type="range" id="quality" name="power" min="0" max="3" value="2">
+				<br><br>
+				<button class="ripple" type="submit">Compress</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>PDF Compressor</strong> reduces the file size of your PDF by adjusting image quality and resolution.
+		
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop a PDF file into the upload area.</li>
+					<li>Set the compression level using the slider.</li>
+					<li>Click <strong>Compress</strong> and wait for the result.</li>
+					<li>The compressed PDF will be downloaded automatically.</li>
+				</ol>
+			</p>
+		</div>	
+		<div id="image2pdf_tab" class="tab">
+			<h2>Image to PDF</h2>
+			<form id="image2pdf_form" method="post" enctype="multipart/form-data" action="/image_to_pdf">
+				<input type="file" id="image2pdf_input" name="image_files" multiple accept="image/*" hidden>
+				<div id="image2pdf_dropzone" onclick="document.getElementById('image2pdf_input').click()">
+					Drop or Click to Upload Images
+				</div>
+				<ul id="image2pdf_list"></ul>
+				<input type="hidden" name="order" id="image2pdf_order">
+				<button class="ripple" type="submit">Convert to PDF</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>Image to PDF</strong> allows you to combine images (JPG, PNG, etc.) into a single PDF file.
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop multiple image files into the upload area.</li>
+					<li>Reorder the images by dragging them as you wish.</li>
+					<li>Click the <strong>Convert</strong> button and wait for the PDF to be generated.</li>
+					<li>The resulting PDF file will be downloaded automatically.</li>
+				</ol>
+			</p>
+		</div>
+		<div id="html2pdf_tab" class="tab">
+			<h2>HTML to PDF</h2>
+			<form id="html2pdf_form" method="post" enctype="multipart/form-data" action="/html_to_pdf">
+				<input type="file" id="html_input" name="html_file" accept=".html,.htm" hidden>
+				<div id="html_dropzone" onclick="document.getElementById('html_input').click()">
+					<span id="html_dropzone_text">Drop or Click to Upload PDF</span>
+				</div>
+				<button class="ripple" type="submit">Convert</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>HTML to PDF</strong> convert html file to pdf.
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop HTML file into the upload area.</li>
+					<li>Click <strong>Convert</strong>.</li>
+					<li>The PDF file will automatically download once the conversion is complete.</li>
+				</ol>
+			</p>
+		</div>
+		<div id="word2pdf_tab" class="tab">
+			<h2>Word to PDF</h2>
+			<form id="word2pdf_form" method="post" enctype="multipart/form-data" action="/word_to_pdf">
+				<input type="file" id="word_input" name='file' accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+				<div id="word_dropzone" onclick="document.getElementById('word_input').click()">
+					<span id="word_dropzone_text">Drop or Click to Upload Word File</span>
+				</div>
+				<button class="ripple" type="submit">Convert to PDF</button>
+			</form>
+			<div id="process_loading" class="loading-bar"></div>
+			<p>
+				<strong>Word to PDF</strong> will convert your DOC or DOCX file into a PDF format.
+				</br></br><strong>How to use:</strong>
+				<ol>
+					<li>Click or drop a Word file into the upload area.</li>
+					<li>Click <strong>Convert to PDF</strong> and wait for the conversion.</li>
+					<li>The PDF file will be downloaded automatically.</li>
+				</ol>
+			</p>
+		</div>
+	</div>
+	<script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+<footer class="watermark">© Developed By Dx4</footer>
+</html>

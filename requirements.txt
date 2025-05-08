@@ -1,0 +1,13 @@
+Flask
+Werkzeug
+PyPDF2
+Pillow
+EeasyPrint
+redis
+flask-redis
+PyMuPdf
+mammoth
+weasyprint
+python-docx
+fpdf
+reportlab
