@@ -12,13 +12,11 @@ OUTPUT_FOLDER = 'output'
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def allowed_file(filename):
-	if os.getenv('FLASK_DEBUG') == '1':  # Periksa mode debug Flask
-		logging.info(f"Checking if file is allowed: {filename}")
+	logging.info(f"Checking if file is allowed: {filename}")
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def convert_images_to_pdf(image_paths):
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info("Converting images to PDF")
+	logging.info("Converting images to PDF")
 	image_list = []
 	for image_path in image_paths:
 		img = Image.open(image_path)
@@ -29,13 +27,11 @@ def convert_images_to_pdf(image_paths):
 	image_list[0].save(output_pdf, save_all=True, append_images=image_list[1:], resolution=100.0, quality=95, optimize=True)
 	output_pdf.seek(0)
 
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info("Images successfully converted to PDF")
+	logging.info("Images successfully converted to PDF")
 	return output_pdf
 
 def Compress(input_path, output_path, power=2):
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info(f"Compressing PDF: {input_path} with power {power}")
+	logging.info(f"Compressing PDF: {input_path} with power {power}")
 	# Map power ke kualitas JPEG
 	quality_map = {
 		1: 30,   # screen
@@ -62,12 +58,10 @@ def Compress(input_path, output_path, power=2):
 		images[0].save(output_path, save_all=True, append_images=images[1:])
 
 	original.close()
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info(f"Compressed PDF saved to: {output_path}")
+	logging.info(f"Compressed PDF saved to: {output_path}")
 	
 def cleanup_output_folder():
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info("Starting cleanup thread for output folder")
+	logging.info("Starting cleanup thread for output folder")
 	time.sleep(3)
 	while True:
 		for folder in [OUTPUT_FOLDER, UPLOAD_FOLDER]:
@@ -78,15 +72,13 @@ def cleanup_output_folder():
 						os.remove(path)
 					elif os.path.isdir(path):
 						shutil.rmtree(path)
-					if os.getenv('FLASK_DEBUG') == '1':
-						logging.info(f"[Auto Cleanup] Deleted: {path}")
+					logging.info(f"[Auto Cleanup] Deleted: {path}")
 				except Exception as e:
 					print(f"[Auto Cleanup] Error bro {path}: {e}")
 		time.sleep(600)
 
 def slide_to_image(slide, width, height):
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info("Converting slide to image")
+	logging.info("Converting slide to image")
 	"""
 	Helper function to render a slide as an image.
 	"""
@@ -101,6 +93,5 @@ def slide_to_image(slide, width, height):
 				for run in paragraph.runs:
 					draw.text((10, 10), run.text, fill="black")  # Simplified text rendering
 
-	if os.getenv('FLASK_DEBUG') == '1':
-		logging.info("Slide successfully converted to image")
+	logging.info("Slide successfully converted to image")
 	return img
