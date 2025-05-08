@@ -2,7 +2,6 @@ Flask
 Werkzeug
 PyPDF2
 Pillow
-EeasyPrint
 redis
 flask-redis
 PyMuPdf
