@@ -85,27 +85,33 @@ def slide_to_image(slide, width, height):
 	from PIL import Image, ImageDraw
 
 	try:
-		# Reduce resolution to optimize memory usage
-		width, height = int(width // 2), int(height // 2)
-		img = Image.new("RGB", (width, height), "white")
-		draw = ImageDraw.Draw(img)
+			# Dynamically adjust resolution to prevent memory issues
+		scale_factor = 1
+		while True:
+			try:
+				adjusted_width = int(width // scale_factor)
+				adjusted_height = int(height // scale_factor)
+				img = Image.new("RGB", (adjusted_width, adjusted_height), "white")
+				draw = ImageDraw.Draw(img)
 
-		for shape in slide.shapes:
-			if shape.has_text_frame:
-				y_offset = 10  # Start drawing text from the top
-				for paragraph in shape.text_frame.paragraphs:
-					for run in paragraph.runs:
-						text = run.text.strip()
-						if text:  # Only draw non-empty text
-							draw.text((10, y_offset), text, fill="black")
-							y_offset += 15  # Increment y-offset for the next line of text
+				for shape in slide.shapes:
+					if shape.has_text_frame:
+						y_offset = 10  # Start drawing text from the top
+						for paragraph in shape.text_frame.paragraphs:
+							for run in paragraph.runs:
+								text = run.text.strip()
+								if text:  # Only draw non-empty text
+									draw.text((10, y_offset), text, fill="black")
+									y_offset += 15  # Increment y-offset for the next line of text
 
-		logging.info("Slide successfully converted to image")
-		return img
-	except MemoryError as e:
-		logging.error("MemoryError: Not enough memory to process the slide. Consider reducing the resolution or size.")
-		logging.debug("Stack trace:", exc_info=True)
-		return None
+				logging.info("Slide successfully converted to image")
+				return img
+			except MemoryError:
+				scale_factor *= 2  # Increase scale factor to reduce resolution
+				logging.warning(f"MemoryError: Reducing resolution by scale factor {scale_factor}")
+				if scale_factor > 8:  # Prevent infinite scaling
+					logging.error("Unable to process slide due to memory constraints.")
+					return None
 	except AttributeError as e:
 		logging.error(f"AttributeError while processing slide: {e}")
 		logging.debug("Ensure the slide object has the expected attributes.", exc_info=True)
