@@ -109,7 +109,7 @@ def slide_to_image(slide, width, height):
 			except MemoryError:
 				scale_factor *= 2  # Increase scale factor to reduce resolution
 				logging.warning(f"MemoryError: Reducing resolution by scale factor {scale_factor}")
-				if scale_factor > 8:  # Prevent infinite scaling
+				if scale_factor > 64:  # Prevent infinite scaling
 					logging.error("Unable to process slide due to memory constraints.")
 					return None
 	except AttributeError as e:
