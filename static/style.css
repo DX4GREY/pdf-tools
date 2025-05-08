@@ -105,6 +105,17 @@ div[id$="_dropzone"] {
 	background: rgba(255, 255, 255, 0.05);
 	cursor: pointer;
 	word-break: break-word;
+	transition: background-color 0.3s, border-color 0.3s;
+}
+
+div[id$="_dropzone"]:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: var(--active-bg-light);
+}
+
+div[id$="_dropzone"].dragover {
+	background: rgba(63, 81, 181, 0.2); /* Highlight color during drag */
+	border-color: var(--active-bg-light);
 }
 
 #file_list,

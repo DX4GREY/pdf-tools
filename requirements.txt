@@ -1,4 +1,5 @@
 Flask
+flask_limiter
 Werkzeug
 PyPDF2
 Pillow
@@ -8,5 +9,7 @@ PyMuPdf
 mammoth
 weasyprint
 python-docx
+python-pptx
 fpdf
 reportlab
+pdfkit

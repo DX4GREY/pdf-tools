@@ -19,13 +19,14 @@
 				<button onclick="showTab('image2pdf_tab')">IMAGE to PDF</button>
 				<button onclick="showTab('html2pdf_tab')">HTML to PDF</button>
 				<button onclick="showTab('word2pdf_tab')">Word to PDF</button>
+				<button onclick="showTab('ppt2pdf_tab')">PPTX to PDF</button>
 			</div>
 		</div>
 		<div id="merge_tab" class="tab active">
 			<h2>PDF Merger</h2>
 			<form id="merge_form" method="post" enctype="multipart/form-data" action="/merge">
 				<input type="file" id="merge_input" name="merge_files" multiple accept="application/pdf" hidden>
-				<div id="merge_dropzone" onclick="document.getElementById('merge_input').click()">Drop or Click to Upload PDFs</div>
+				<div id="merge_dropzone" data-dropzone="merge" onclick="document.getElementById('merge_input').click()">Drop or Click to Upload PDFs</div>
 				<ul id="file_list"></ul>
 				<input type="hidden" name="order" id="file_order">
 				<button class="ripple" type="submit">Merge</button>
@@ -48,7 +49,7 @@
 			<h2>PDF Splitter</h2>
 			<form id="split_form" method="post" enctype="multipart/form-data" action="/split">
 				<input type="file" id="split_input" name="split_file" accept="application/pdf" hidden>
-				<div id="split_dropzone" onclick="document.getElementById('split_input').click()">
+				<div id="split_dropzone" data-dropzone="split" onclick="document.getElementById('split_input').click()">
 					<span id="split_dropzone_text">Drop or Click to Upload PDF</span>
 				</div>
 				<button class="ripple" type="submit">Split</button>
@@ -69,7 +70,7 @@
 			<h2>PDF Compressor</h2>
 			<form id="compress_form" method="post" enctype="multipart/form-data" action="/compress">
 				<input type="file" id="compress_input" name="file" accept="application/pdf" hidden>
-				<div id="compress_dropzone" onclick="document.getElementById('compress_input').click()">
+				<div id="compress_dropzone" data-dropzone="compress" onclick="document.getElementById('compress_input').click()">
 					<span id="compress_dropzone_text">Drop or Click to Upload PDF</span>
 				</div>
 				<br>
@@ -95,7 +96,7 @@
 			<h2>Image to PDF</h2>
 			<form id="image2pdf_form" method="post" enctype="multipart/form-data" action="/image_to_pdf">
 				<input type="file" id="image2pdf_input" name="image_files" multiple accept="image/*" hidden>
-				<div id="image2pdf_dropzone" onclick="document.getElementById('image2pdf_input').click()">
+				<div id="image2pdf_dropzone" data-dropzone="image2pdf" onclick="document.getElementById('image2pdf_input').click()">
 					Drop or Click to Upload Images
 				</div>
 				<ul id="image2pdf_list"></ul>
@@ -118,7 +119,7 @@
 			<h2>HTML to PDF</h2>
 			<form id="html2pdf_form" method="post" enctype="multipart/form-data" action="/html_to_pdf">
 				<input type="file" id="html_input" name="html_file" accept=".html,.htm" hidden>
-				<div id="html_dropzone" onclick="document.getElementById('html_input').click()">
+				<div id="html_dropzone" data-dropzone="html" onclick="document.getElementById('html_input').click()">
 					<span id="html_dropzone_text">Drop or Click to Upload PDF</span>
 				</div>
 				<button class="ripple" type="submit">Convert</button>
@@ -138,7 +139,7 @@
 			<h2>Word to PDF</h2>
 			<form id="word2pdf_form" method="post" enctype="multipart/form-data" action="/word_to_pdf">
 				<input type="file" id="word_input" name='file' accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
-				<div id="word_dropzone" onclick="document.getElementById('word_input').click()">
+				<div id="word_dropzone" data-dropzone="word" onclick="document.getElementById('word_input').click()">
 					<span id="word_dropzone_text">Drop or Click to Upload Word File</span>
 				</div>
 				<button class="ripple" type="submit">Convert to PDF</button>
@@ -158,7 +159,7 @@
 			<h2>PPT to PDF</h2>
 			<form id="ppt2pdf_form" method="post" enctype="multipart/form-data" action="/ppt_to_pdf">
 				<input type="file" id="ppt2pdf_input" name="file" accept=".pptx" hidden>
-				<div id="ppt2pdf_dropzone" onclick="document.getElementById('ppt2pdf_input').click()">
+				<div id="ppt2pdf_dropzone" data-dropzone="ppt2pdf" onclick="document.getElementById('ppt2pdf_input').click()">
 					<span id="ppt2pdf_dropzone_text">Drop or Click to Upload PPTX File</span>
 				</div>
 				<button class="ripple" type="submit">Convert to PDF</button>

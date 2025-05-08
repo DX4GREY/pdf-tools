@@ -1,26 +1,55 @@
 // Utility
 function updateText(input, textElement, defaultText) {
-	textElement.textContent = input.files.length > 0 ? input.files[0].name : defaultText;
+	if (input.files.length > 0) {
+		const fileNames = Array.from(input.files).map(file => file.name).join(', ');
+		textElement.textContent = fileNames;
+	} else {
+		textElement.textContent = defaultText;
+	}
 }
 
-function handleDropzone(dropzone, input, textElement, defaultText) {
+function handleDropzone(dropzone, input, textElement, defaultText, acceptedTypes = []) {
 	dropzone.addEventListener('dragover', (e) => {
 		e.preventDefault();
-		dropzone.style.backgroundColor = '#ddd';
+		dropzone.classList.add('dragover'); // Add class for visual feedback
 	});
 	dropzone.addEventListener('dragleave', () => {
-		dropzone.style.backgroundColor = '#fafafa';
+		dropzone.classList.remove('dragover'); // Remove class when dragging ends
 	});
 	dropzone.addEventListener('drop', (e) => {
 		e.preventDefault();
-		dropzone.style.backgroundColor = '#fafafa';
+		dropzone.classList.remove('dragover'); // Remove class on drop
 		const files = e.dataTransfer.files;
-		if (files.length > 0 && files[0].type === 'application/pdf') {
-			input.files = files;
+		const dataTransfer = new DataTransfer();
+		for (let file of files) {
+			if (acceptedTypes.length === 0 || acceptedTypes.includes(file.type)) {
+				dataTransfer.items.add(file);
+			} else {
+				alert(`Invalid file type: ${file.name}`);
+			}
+		}
+		if (dataTransfer.files.length > 0) {
+			for (let file of input.files) {
+				dataTransfer.items.add(file); // Retain previously added files
+			}
+			input.files = dataTransfer.files; // Assign files programmatically
 			updateText(input, textElement, defaultText);
+		} else {
+			alert("No valid files were added.");
 		}
 	});
-	input.addEventListener('change', () => updateText(input, textElement, defaultText));
+	input.addEventListener('change', () => {
+		const files = input.files;
+		const validFiles = Array.from(files).filter(file => 
+			acceptedTypes.length === 0 || acceptedTypes.includes(file.type)
+		);
+		if (validFiles.length === files.length) {
+			updateText(input, textElement, defaultText);
+		} else {
+			alert("Some files are invalid. Please upload valid files.");
+			input.value = ""; // Reset input if invalid
+		}
+	});
 }
 
 // Tabs
@@ -93,7 +122,8 @@ handleDropzone(
 	document.getElementById('split_dropzone'),
 	document.getElementById('split_input'),
 	document.getElementById('split_dropzone_text'),
-	"Drop or Click to Upload PDF"
+	"Drop or Click to Upload PDF",
+	['application/pdf']
 );
 
 // Compress
@@ -101,7 +131,8 @@ handleDropzone(
 	document.getElementById('compress_dropzone'),
 	document.getElementById('compress_input'),
 	document.getElementById('compress_dropzone_text'),
-	"Drop or Click to Upload PDF"
+	"Drop or Click to Upload PDF",
+	['application/pdf']
 );
 
 // Word To PDF
@@ -109,16 +140,30 @@ handleDropzone(
 	document.getElementById('word_dropzone'),
 	document.getElementById('word_input'),
 	document.getElementById('word_dropzone_text'),
-	"Drop or Click to Upload Word File"
+	"Drop or Click to Upload Word File",
+	[
+		'application/msword',
+		'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+	]
+);
+
+// PPT to PDF
+handleDropzone(
+	document.getElementById('ppt2pdf_dropzone'),
+	document.getElementById('ppt2pdf_input'),
+	document.getElementById('ppt2pdf_dropzone_text'),
+	"Drop or Click to Upload PPTX File",
+	['application/vnd.openxmlformats-officedocument.presentationml.presentation']
 );
 
 // HTML to PDF
-const htmlInput = document.getElementById("html_input");
-const htmlText = document.getElementById("html_dropzone_text");
-
-htmlInput.addEventListener("change", () => {
-	htmlText.textContent = htmlInput.files.length > 0 ? htmlInput.files[0].name : "Drop or Click to Upload PDF";
-});
+handleDropzone(
+	document.getElementById('html_dropzone'),
+	document.getElementById('html_input'),
+	document.getElementById('html_dropzone_text'),
+	"Drop or Click to Upload HTML File",
+	['text/html']
+);
 
 // Quality slider
 const qualitySlider = document.getElementById("quality");
@@ -141,4 +186,37 @@ document.querySelectorAll("form").forEach(form => {
 		showProgress("process_loading");
 		setTimeout(() => hideProgress("process_loading"), 2500);
 	});
+});
+
+document.querySelectorAll('[data-dropzone]').forEach(dropzone => {
+	const type = dropzone.dataset.dropzone;
+	const input = document.getElementById(`${type}_input`);
+	const textElement = document.getElementById(`${type}_dropzone_text`);
+	let defaultText = dropzone.textContent.trim();
+
+	let acceptedTypes = [];
+	switch (type) {
+		case 'merge':
+		case 'split':
+		case 'compress':
+			acceptedTypes = ['application/pdf'];
+			break;
+		case 'word':
+			acceptedTypes = [
+				'application/msword',
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+			];
+			break;
+		case 'ppt2pdf':
+			acceptedTypes = ['application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+			break;
+		case 'html':
+			acceptedTypes = ['text/html'];
+			break;
+		case 'image2pdf':
+			acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+			break;
+	}
+
+	handleDropzone(dropzone, input, textElement, defaultText, acceptedTypes);
 });
