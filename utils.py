@@ -83,6 +83,7 @@ def slide_to_image(slide, width, height):
 	Helper function to render a slide as an image.
 	"""
 	from PIL import Image, ImageDraw
+	import traceback
 
 	try:
 		img = Image.new("RGB", (int(width), int(height)), "white")
@@ -98,4 +99,5 @@ def slide_to_image(slide, width, height):
 		return img
 	except Exception as e:
 		logging.error(f"Error converting slide to image: {e}")
+		logging.debug("Stack trace:", exc_info=True)
 		return None
