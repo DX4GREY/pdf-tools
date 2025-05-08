@@ -84,14 +84,18 @@ def slide_to_image(slide, width, height):
 	"""
 	from PIL import Image, ImageDraw
 
-	img = Image.new("RGB", (int(width), int(height)), "white")
-	draw = ImageDraw.Draw(img)
+	try:
+		img = Image.new("RGB", (int(width), int(height)), "white")
+		draw = ImageDraw.Draw(img)
 
-	for shape in slide.shapes:
-		if shape.has_text_frame:
-			for paragraph in shape.text_frame.paragraphs:
-				for run in paragraph.runs:
-					draw.text((10, 10), run.text, fill="black")  # Simplified text rendering
+		for shape in slide.shapes:
+			if shape.has_text_frame:
+				for paragraph in shape.text_frame.paragraphs:
+					for run in paragraph.runs:
+						draw.text((10, 10), run.text, fill="black")  # Simplified text rendering
 
-	logging.info("Slide successfully converted to image")
-	return img
+		logging.info("Slide successfully converted to image")
+		return img
+	except Exception as e:
+		logging.error(f"Error converting slide to image: {e}")
+		return None
